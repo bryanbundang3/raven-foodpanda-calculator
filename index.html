@@ -1,1 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PandaRemit</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fp-pink: #d70466;
+            --fp-pink-muted: #b00354;
+            --fp-black: #1a1a1a;
+            --bg-matte: #f4f4f4;
+            --text-gray: #666;
+            --remit-red: #c0392b;
+            --gross-green: #27ae60;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--bg-matte);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+            color: var(--fp-black);
+            margin: 0;
+            padding: env(safe-area-inset-top) 20px 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header { text-align: center; margin-bottom: 25px; margin-top: 20px; }
+        .logo { width: 60px; height: 60px; fill: var(--fp-black); margin-bottom: 10px; }
+        h1 { margin: 0; font-size: 22px; font-weight: 700; color: var(--fp-pink); }
+        .subtitle { font-size: 14px; color: var(--text-gray); font-weight: 300; margin-top: 2px; }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 15px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .currency-symbol {
+            position: absolute;
+            left: 15px;
+            font-weight: 600;
+            color: var(--fp-black);
+        }
+        input {
+            width: 100%;
+            padding: 12px 12px 12px 35px;
+            border: 1.5px solid #eee;
+            border-radius: 12px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 16px;
+            background: #fafafa;
+        }
+        input:focus { outline: none; border-color: var(--fp-pink-muted); }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-main { background: var(--fp-black); color: white; margin-top: 10px; }
+        .btn-copy { background: #eee; color: var(--fp-black); width: auto; padding: 6px 12px; font-size: 12px; margin-left: 10px; border-radius: 8px; }
+        .btn-clear { background: transparent; color: var(--text-gray); font-weight: 400; font-size: 13px; margin-top: 10px; text-decoration: underline; }
+        .btn-history { background: #e0e0e0; color: var(--fp-black); font-size: 12px; padding: 8px; margin-top: 20px; width: auto; border-radius: 8px; }
+
+        .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .result-label { font-size: 15px; }
+        .result-val { font-weight: 700; font-size: 18px; }
+        .remit-text { color: var(--remit-red); }
+        .gross-text { color: var(--gross-green); }
+
+        #history-section { width: 100%; max-width: 350px; margin-top: 30px; font-size: 12px; border-top: 1px solid #ddd; padding-top: 15px; }
+        .history-item { margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .history-date { font-weight: 700; font-style: italic; display: block; }
+
+        .footer-note { margin-top: auto; padding-top: 40px; font-style: italic; color: #999; font-size: 13px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <svg class="logo" viewBox="0 0 100 100">
+            <path d="M50 10C27.9 10 10 27.9 10 50s17.9 40 40 40 40-17.9 40-40S72.1 10 50 10zm18 25c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4zm-36 0c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4zm18 35c-9.9 0-18-8.1-18-18h36c0 9.9-8.1 18-18 18z"/>
+        </svg>
+        <h1>Foodpanda</h1>
+        <div class="subtitle">Remittance Calculator for Raven</div>
+    </header>
+
+    <div class="card">
+        <div class="input-group">
+            <label>👛 <b>Wallet</b> Amount</label>
+            <div class="input-wrapper">
+                <span class="currency-symbol">₱</span>
+                <input type="number" id="wallet" placeholder="Input your Wallet Amount here" step="0.01" inputmode="decimal">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>💵 Total <b>Payment</b></label>
+            <div class="input-wrapper">
+                <span class="currency-symbol">₱</span>
+                <input type="number" id="earnings" placeholder="Input your Total Earnings here" step="0.01" inputmode="decimal">
+            </div>
+        </div>
+        <button class="btn btn-main" onclick="calculate()">Calculate</button>
+    </div>
+
+    <div class="card" id="result-card" style="display:none;">
+        <div class="result-row">
+            <span class="result-label remit-text">💸 Amount to Remit:</span>
+            <div>
+                <span class="result-val remit-text" id="res-remit">₱0.00</span>
+                <button class="btn btn-copy" id="copy-btn" onclick="copyRemit()">Copy</button>
+            </div>
+        </div>
+        <div class="result-row">
+            <span class="result-label gross-text">🤑 Gross Earnings:</span>
+            <span class="result-val gross-text" id="res-gross">₱0.00</span>
+        </div>
+    </div>
+
+    <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+    <button class="btn btn-history" onclick="saveHistory()">Save to History</button>
+
+    <div id="history-section">
+        <div id="history-list"></div>
+    </div>
+
+    <div class="footer-note">
+        Ingat lagi, wag ka magpasagasa dyan. 😘
+    </div>
+
+    <script>
+        function formatNum(num) {
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function calculate() {
+            const wallet = parseFloat(document.getElementById('wallet').value) || 0;
+            const total = parseFloat(document.getElementById('earnings').value) || 0;
+            
+            const gross = total * 0.98;
+            const remit = wallet - gross;
+
+            document.getElementById('res-gross').innerText = '₱' + formatNum(gross);
+            document.getElementById('res-remit').innerText = '₱' + formatNum(remit);
+            document.getElementById('result-card').style.display = 'block';
+        }
+
+        function copyRemit() {
+            const val = document.getElementById('res-remit').innerText.replace('₱', '').replace(/,/g, '');
+            navigator.clipboard.writeText(val);
+            const btn = document.getElementById('copy-btn');
+            btn.innerText = "Copied!";
+            setTimeout(() => { btn.innerText = "Copy"; }, 2000);
+        }
+
+        function clearAll() {
+            document.getElementById('wallet').value = '';
+            document.getElementById('earnings').value = '';
+            document.getElementById('result-card').style.display = 'none';
+        }
+
+        function saveHistory() {
+            const remit = document.getElementById('res-remit').innerText;
+            const gross = document.getElementById('res-gross').innerText;
+            if(remit === "₱0.00") return;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            const entry = { date: dateStr, remit, gross };
+            let history = JSON.parse(localStorage.getItem('pandaHistory') || '[]');
+            history.unshift(entry);
+            if(history.length > 5) history.pop();
+            localStorage.setItem('pandaHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('pandaHistory') || '[]');
+            const list = document.getElementById('history-list');
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span class="history-date">${item.date}</span>
+                    Amount to Remit: ${item.remit}<br>
+                    Gross Earnings: ${item.gross}
+                </div>
+            `).join('');
+        }
+
+        window.onload = renderHistory;
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
