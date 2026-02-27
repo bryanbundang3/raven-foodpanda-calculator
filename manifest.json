@@ -1,5 +1,5 @@
 {
-  "short_name": "PandaRemit",
+  "short_name": "RavePandaCalc",
   "name": "Foodpanda Remittance Calculator",
   "description": "Automated remittance calculator for Foodpanda operations.",
   "start_url": "./index.html",
