@@ -199,8 +199,6 @@ return "Tangina, paldo si gago! 🤪";
 }
 
 function calculate(){
-hasCalculated = true;
-  
 const wallet=parseFloat(walletInput.value)||0;
 const total=parseFloat(earningsInput.value)||0;
 const tax=total*0.02;
@@ -257,7 +255,6 @@ toggleBtn.innerText="Show Calculations";
 }
 
 function clearAll(){
-hasCalculated = false;
 walletInput.value="";
 earningsInput.value="";
 resultCard.style.display="none";
@@ -305,15 +302,6 @@ const calcSection=document.getElementById("calc-section");
 const remarkDiv=document.getElementById("remark");
 const remitBox=document.getElementById("remit-box");
 const historyList=document.getElementById("history-list");
-let hasCalculated = false;
-
-walletInput.addEventListener("input",()=>{
-if(hasCalculated) calculate();
-});
-
-earningsInput.addEventListener("input",()=>{
-if(hasCalculated) calculate();
-});
 
 window.onload=renderHistory;
 
