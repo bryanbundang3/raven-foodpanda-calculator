@@ -302,6 +302,7 @@ const calcSection=document.getElementById("calc-section");
 const remarkDiv=document.getElementById("remark");
 const remitBox=document.getElementById("remit-box");
 const historyList=document.getElementById("history-list");
+  let hasCalculated = false;
 
 walletInput.addEventListener("input",()=>calculate());
 earningsInput.addEventListener("input",()=>calculate());
